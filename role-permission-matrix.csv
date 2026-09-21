@@ -1,0 +1,17 @@
+Resource/Action,employee1,manager1,admin1
+S3 read public/*,Allow,Allow,Allow
+S3 read employee/*,Allow,Allow,Allow
+S3 read/write manager/*,Deny,Allow,Allow
+S3 upload employee/*,Deny,Allow,Allow
+S3 delete objects/bucket,Deny,Deny,Allow
+KMS decrypt data key,Allow,Allow,Allow
+KMS encrypt/generate data key,Deny,Allow,Allow
+KMS disable/delete key,Deny,Deny,Deny
+EC2 describe,Allow,Allow,Allow
+EC2 start/stop/reboot,Deny,Allow (tagged only),Allow
+EC2 terminate,Deny,Deny,Allow
+IAM any action,Deny,Deny,Allow
+CloudTrail LookupEvents,Deny,Allow,Allow
+CloudTrail stop/delete,Deny,Deny,Deny
+Disable public access block,Deny,Deny,Deny (without MFA)
+Any action without MFA,Deny,Deny,Deny
