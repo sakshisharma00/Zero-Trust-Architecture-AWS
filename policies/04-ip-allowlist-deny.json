@@ -1,0 +1,15 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyIfNotFromAllowedIP",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "NotIpAddress": { "aws:SourceIp": ["<YOUR_PUBLIC_IP>/32"] },
+        "BoolIfExists": { "aws:ViaAWSService": "false" }
+      }
+    }
+  ]
+}

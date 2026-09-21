@@ -1,0 +1,52 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AdminScopedToLabServices",
+      "Effect": "Allow",
+      "Action": [
+        "iam:*",
+        "ec2:*",
+        "s3:*",
+        "kms:*",
+        "cloudtrail:*",
+        "cloudwatch:*",
+        "logs:*",
+        "ssm:*",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GuardrailProtectAuditTrail",
+      "Effect": "Deny",
+      "Action": [
+        "cloudtrail:StopLogging",
+        "cloudtrail:DeleteTrail",
+        "cloudtrail:UpdateTrail",
+        "cloudtrail:PutEventSelectors"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GuardrailProtectEncryptionKeys",
+      "Effect": "Deny",
+      "Action": ["kms:ScheduleKeyDeletion", "kms:DisableKey", "kms:DeleteImportedKeyMaterial"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GuardrailNoPublicS3",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock",
+        "s3:DeletePublicAccessBlock",
+        "s3:PutBucketPolicy",
+        "s3:PutBucketAcl"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": { "aws:MultiFactorAuthPresent": "false" }
+      }
+    }
+  ]
+}

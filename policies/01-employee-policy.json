@@ -1,0 +1,51 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListBucketOwnPrefixesOnly",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::zero-trust-lab-sakshisharma",
+      "Condition": {
+        "StringLike": { "s3:prefix": ["public/*", "employee/*"] }
+      }
+    },
+    {
+      "Sid": "ReadEmployeeData",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": [
+        "arn:aws:s3:::zero-trust-lab-sakshisharma/public/*",
+        "arn:aws:s3:::zero-trust-lab-sakshisharma/employee/*"
+      ]
+    },
+    {
+      "Sid": "DecryptViaKMS",
+      "Effect": "Allow",
+      "Action": ["kms:Decrypt", "kms:DescribeKey"],
+      "Resource": "arn:aws:kms:ap-south-1:596451157454:key/f5bf958b-37da-418f-a81c-f48f0eedbebb"
+    },
+    {
+      "Sid": "ReadOnlyEC2Visibility",
+      "Effect": "Allow",
+      "Action": ["ec2:DescribeInstances", "ec2:DescribeInstanceStatus"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ExplicitDenySensitiveActions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:*",
+        "cloudtrail:*",
+        "kms:ScheduleKeyDeletion",
+        "kms:DisableKey",
+        "ec2:StopInstances",
+        "ec2:TerminateInstances",
+        "ec2:RebootInstances",
+        "s3:Delete*",
+        "s3:PutObject"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

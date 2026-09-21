@@ -1,0 +1,76 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListBucketPrefixes",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::zero-trust-lab-sakshisharma",
+      "Condition": {
+        "StringLike": { "s3:prefix": ["public/*", "employee/*", "manager/*"] }
+      }
+    },
+    {
+      "Sid": "ReadWriteManagerData",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject"],
+      "Resource": [
+        "arn:aws:s3:::zero-trust-lab-sakshisharma/employee/*",
+        "arn:aws:s3:::zero-trust-lab-sakshisharma/manager/*"
+      ]
+    },
+    {
+      "Sid": "ReadPublicData",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::zero-trust-lab-sakshisharma/public/*"
+    },
+    {
+      "Sid": "UseKMSForDataOnly",
+      "Effect": "Allow",
+      "Action": ["kms:Decrypt", "kms:Encrypt", "kms:GenerateDataKey", "kms:DescribeKey"],
+      "Resource": "arn:aws:kms:ap-south-1:596451157454:key/f5bf958b-37da-418f-a81c-f48f0eedbebb"
+    },
+    {
+      "Sid": "EC2ReadAll",
+      "Effect": "Allow",
+      "Action": ["ec2:Describe*"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EC2StartStopLabTaggedOnly",
+      "Effect": "Allow",
+      "Action": ["ec2:StartInstances", "ec2:StopInstances", "ec2:RebootInstances"],
+      "Resource": "arn:aws:ec2:ap-south-1:596451157454:instance/*",
+      "Condition": {
+        "StringEquals": { "aws:ResourceTag/Project": "zero-trust-lab" }
+      }
+    },
+    {
+      "Sid": "AuditVisibilityReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "cloudtrail:LookupEvents",
+        "cloudwatch:Describe*",
+        "cloudwatch:Get*",
+        "cloudwatch:List*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ExplicitDenyPrivilegedActions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:*",
+        "ec2:TerminateInstances",
+        "s3:DeleteBucket",
+        "s3:DeleteObject",
+        "kms:ScheduleKeyDeletion",
+        "kms:DisableKey",
+        "cloudtrail:StopLogging",
+        "cloudtrail:DeleteTrail"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
